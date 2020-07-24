@@ -1,7 +1,10 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-# Create your views here.
+from .forms import PostForm
 from .models import Post
+
+# Create your views here.
  
 def post_list(request):
     posts = Post.objects.all()
@@ -16,3 +19,13 @@ def post_detail(request, post_id):
         'post': post
     }
     return render(request, "post_detail.html", context)
+
+def post_create(request):
+    form = PostForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return HttpResponseRedirect('/posts')
+    context = {
+        "form": form
+    }
+    return render(request, "post_create.html", context)
